@@ -26,18 +26,19 @@ class _IndexScreenState extends State<IndexScreen> {
   }
 
   final List<Widget> pages = [
-    HomeScreen(),
-    TrasactionScreen(),
-    AddScreen(),
-    StacticScreen(),
-    ProfileScren()
+    const HomeScreen(),
+    const TrasactionScreen(),
+    const AddScreen(),
+    const StacticScreen(),
+    const ProfileScren()
   ];
   
   final PageStorageBucket bucket = PageStorageBucket();
 
   Widget build(BuildContext context) {
-    Widget currentScreen = currentIndex == 0 ? HomeScreen():currentIndex == 1 ? TrasactionScreen(): currentIndex==2?AddScreen():currentIndex==3?StacticScreen():ProfileScren();
+    Widget currentScreen = currentIndex == 0 ? const HomeScreen():currentIndex == 1 ? const TrasactionScreen(): currentIndex==2?const AddScreen():currentIndex==3?const StacticScreen():const ProfileScren();
     return  Scaffold(
+      backgroundColor: const Color(0xffC0DBEA),
       body: PageStorage(
         child: currentScreen,
         bucket: bucket,
@@ -47,17 +48,18 @@ class _IndexScreenState extends State<IndexScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           
-            Get.to(AddScreen());
+            Get.to(const AddScreen());
           
         },
         child: const Icon(Icons.add),
-        backgroundColor: Colors.purple.shade300,
+        backgroundColor: const Color(0xff4F709C)
         
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         
         bottomNavigationBar: BottomAppBar(
-          shape:CircularNotchedRectangle(),
+          // color: const Color(0xffC0DBEA),
+          shape:const CircularNotchedRectangle(),
           notchMargin: 10,
           child: Container(
             height: 60,
@@ -71,21 +73,26 @@ class _IndexScreenState extends State<IndexScreen> {
                       minWidth: 50,
                       onPressed: (){
                         setState(() {
-                          currentScreen = HomeScreen();
+                          currentScreen = const HomeScreen();
                           currentIndex = 0;
                         });
                         
                         
                       },
                       child: Column(
+                        
                         children: [
-                          Icon(Icons.home,
-                          size: 40,
-                          color: currentIndex==0?Colors.purple.shade300:Colors.black,
+                          const SizedBox(height: 10,),
+                          currentIndex==0?Image.asset("assets/home_on.png",
+                          height: 30,
+                          width: 30,
+                          ):Image.asset("assets/home_off.png",
+                          height: 30,
+                          width: 30,
                           ),
-                          Text('Home',
+                          const Text('Trang chủ',
                           style: TextStyle(
-                            color: currentIndex==0?Colors.purple.shade300:Colors.black
+                            fontWeight: FontWeight.w500
                           ),
                           )
                         ],
@@ -99,7 +106,7 @@ class _IndexScreenState extends State<IndexScreen> {
                       minWidth: 50,
                       onPressed: (){
                         setState(() {
-                          currentScreen = TrasactionScreen();
+                          currentScreen = const TrasactionScreen();
                           currentIndex = 1;
                         });
                         
@@ -107,13 +114,17 @@ class _IndexScreenState extends State<IndexScreen> {
                       },
                       child: Column(
                         children: [
-                          Icon(Icons.change_circle,
-                          size: 40,
-                          color: currentIndex==1?Colors.purple.shade300:Colors.black,
+                          const SizedBox(height: 10,),
+                          currentIndex==1?Image.asset("assets/history_on.png",
+                          height: 30,
+                          width: 30,
+                          ):Image.asset("assets/history_off.png",
+                          height: 30,
+                          width: 30,
                           ),
-                          Text('Trasaction',
+                           const Text('Lịch sử',
                           style: TextStyle(
-                            color: currentIndex==1?Colors.purple.shade300:Colors.black
+                            fontWeight: FontWeight.w500
                           ),
                           )
                         ],
@@ -128,13 +139,13 @@ class _IndexScreenState extends State<IndexScreen> {
                 ),
 
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  
                   children: [
                     MaterialButton(
-                      minWidth: 50,
+                       minWidth: 50,
                       onPressed: (){
                         setState(() {
-                          currentScreen = StacticScreen();
+                          currentScreen = const StacticScreen();
                           currentIndex = 3;
                         });
                         
@@ -142,13 +153,17 @@ class _IndexScreenState extends State<IndexScreen> {
                       },
                       child: Column(
                         children: [
-                          Icon(Icons.pie_chart,
-                          size: 40,
-                          color: currentIndex==3?Colors.purple.shade300:Colors.black,
+                          const SizedBox(height: 10,),
+                          currentIndex==3?Image.asset("assets/chart_on.png",
+                          height: 30,
+                          width: 30,
+                          ):Image.asset("assets/chart_off.png",
+                          height: 30,
+                          width: 30,
                           ),
-                          Text('Statics',
+                           const Text('Biểu đồ',
                           style: TextStyle(
-                            color: currentIndex==3?Colors.purple.shade300:Colors.black
+                            fontWeight: FontWeight.w500
                           ),
                           )
                         ],
@@ -162,7 +177,7 @@ class _IndexScreenState extends State<IndexScreen> {
                       minWidth: 50,
                       onPressed: (){
                         setState(() {
-                          currentScreen = ProfileScren();
+                          currentScreen = const ProfileScren();
                           currentIndex = 4;
                         });
                         
@@ -170,13 +185,17 @@ class _IndexScreenState extends State<IndexScreen> {
                       },
                       child: Column(
                         children: [
-                          Icon(Icons.person,
-                          size: 40,
-                          color: currentIndex==4?Colors.purple.shade300:Colors.black,
+                          const SizedBox(height: 10,),
+                         currentIndex==4?Image.asset("assets/profile_on.png",
+                          height: 30,
+                          width: 30,
+                          ):Image.asset("assets/profile_off.png",
+                          height: 30,
+                          width: 30,
                           ),
-                          Text('Profile',
+                          const Text('Cá nhân',
                           style: TextStyle(
-                            color: currentIndex==4?Colors.purple.shade300:Colors.black
+                            fontWeight: FontWeight.w500
                           ),
                           )
                         ],
