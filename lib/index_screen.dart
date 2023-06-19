@@ -7,9 +7,10 @@ import 'package:money_manage/screens/home/home_screen.dart';
 import 'package:money_manage/screens/profile/profile_screen.dart';
 import 'package:money_manage/screens/statics/statics_screen.dart';
 import 'package:money_manage/screens/trasaction/trasaction_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class IndexScreen extends StatefulWidget {
-
+ 
   int selectedIndex = 0;
   @override
   State<IndexScreen> createState() => _IndexScreenState();
@@ -17,12 +18,24 @@ class IndexScreen extends StatefulWidget {
 
 class _IndexScreenState extends State<IndexScreen> {
   int currentIndex =0;
+   String? id;
+   
+ 
+  
 
   @override
   
   void initState() {
     // TODO: implement initState
     super.initState();
+    getUser();
+  }
+
+  getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+       id = prefs.getString('id').toString();
+    });
   }
 
   final List<Widget> pages = [
@@ -35,13 +48,14 @@ class _IndexScreenState extends State<IndexScreen> {
   
   final PageStorageBucket bucket = PageStorageBucket();
 
+  @override
   Widget build(BuildContext context) {
     Widget currentScreen = currentIndex == 0 ? const HomeScreen():currentIndex == 1 ? const TrasactionScreen(): currentIndex==2?const AddScreen():currentIndex==3?const StacticScreen():const ProfileScren();
     return  Scaffold(
       backgroundColor: const Color(0xffC0DBEA),
       body: PageStorage(
-        child: currentScreen,
         bucket: bucket,
+        child: currentScreen,
       ),
 
 
@@ -51,8 +65,8 @@ class _IndexScreenState extends State<IndexScreen> {
             Get.to(const AddScreen());
           
         },
-        child: const Icon(Icons.add),
-        backgroundColor: const Color(0xff4F709C)
+        backgroundColor: const Color(0xff4F709C),
+        child: const Icon(Icons.add)
         
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -61,7 +75,7 @@ class _IndexScreenState extends State<IndexScreen> {
           // color: const Color(0xffC0DBEA),
           shape:const CircularNotchedRectangle(),
           notchMargin: 10,
-          child: Container(
+          child: SizedBox(
             height: 60,
             child:Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

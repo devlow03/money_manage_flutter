@@ -1,102 +1,142 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:money_manage/boxes.dart';
+import 'package:money_manage/model/trasaction.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
+  const HomeScreen({Key? key, this.id}) : super(key: key);
+  final String? id;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late Box userBox;
+  
+  String? userName;
+  double? budget;
+  String? day;
+  String? month;
+  String? year;
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  getUser() async {
+    setState(() {
+      userBox = Hive.box('users');
+    userName = userBox.get('name');
+    budget = userBox.get('budget');
+    var dt = DateTime.now();
+     day = dt.day.toString();
+     month = dt.month.toString();
+     year = dt.year.toString();
+    });
+  }
+  
+ 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Colors.grey.shade200,
       backgroundColor: const Color(0xffC0DBEA),
 
-      body: ListView(
-        children: [
-          Column(
-            children: [
-              const SizedBox(
-                height: 50,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Thứ tư 24\nTháng năm",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 20,
-                              child: Image.asset(
-                                "assets/man.png",
-                                color: Colors.transparent,
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                "Ngân Hà",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+
+        },
+        child: ListView(
+          children: [
+            Column(
+              children: [
+                const SizedBox(
+                  height: 50,
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.95,
-                height: 1,
-                color: Colors.black,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                "SỐ DƯ TÀI KHOẢN",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                NumberFormat.simpleCurrency(locale: 'vi').format(200000000),
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 40,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 1.5),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Column(
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                           Text(
+                            DateFormat.yMMMMEEEEd().format(DateTime.now()),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          Row(
+                            children: [
+                              CircleAvatar(
+                            radius: 20,
+                            child: Image.asset(
+                              "assets/man.png",
+                              color: Colors.transparent,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              // snapshot.data?.first.name.toString()??'',
+                              userName.toString(),
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                            ],
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.95,
+                        height: 1,
+                        color: Colors.black,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text(
+                        "NGÂN SÁCH HIỆN TẠI",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: 1),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        NumberFormat.simpleCurrency(locale: 'vi')
+                            .format(double.parse(budget.toString())),
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 40,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 1.5),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -123,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               Text(
                                 NumberFormat.simpleCurrency(locale: 'vi')
-                                    .format(15000000),
+                                    .format(2000000),
                                 style: const TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w400,
@@ -155,9 +195,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               Text(
                                 NumberFormat.simpleCurrency(locale: 'vi')
-                                    .format(150000),
+                                    .format(10000),
                                 style: const TextStyle(
-                                    fontSize: 15,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.w500,
                                     letterSpacing: 1,
                                     color: Colors.white),
@@ -187,7 +227,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(
                             height: 20,
                           ),
-                          ListView.separated(
+                          ValueListenableBuilder<Box<TrasactionModel>>(
+                            valueListenable: Boxes.getTrasaction().listenable(),
+                             builder: (context,box,_){
+                              var data = box.values.toList().cast<TrasactionModel>();
+                              return ListView.separated(
                             itemCount: 5,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
@@ -204,18 +248,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Image.asset(
-                                        "assets/profits.png",
-                                        height: 30,
-                                        width: 30,
-                                      ),
+
+                                      Text(data[index].category),
                                       const SizedBox(
                                         width: 10,
                                       ),
                                       Text(
                                         NumberFormat.simpleCurrency(
                                                 locale: 'vi')
-                                            .format(150000),
+                                            .format(data[index].price),
                                         style: const TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w500,
@@ -224,11 +265,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       const SizedBox(
                                         width: 100,
                                       ),
-                                      const Text(
-                                        'Thu nhập',
+                                       Text(data[index].type.toString(),
                                         style: TextStyle(
                                             fontSize: 15,
-                                            color: Color(0xff767474),
+                                            color: const Color(0xff767474),
                                             letterSpacing: 1),
                                       )
                                     ],
@@ -240,16 +280,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 10,
                               );
                             },
-                          )
+                          );
+                             })
+                          
                         ],
                       ),
                     )
                   ],
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
