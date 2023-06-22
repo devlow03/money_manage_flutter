@@ -18,25 +18,22 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   String? id;
   late Box userBox;
-  
+
   String? userName;
 
   @override
-
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 2), () async {
-      userBox = Hive.box('users');
+    Timer(const Duration(seconds: 3), () async {
+      userBox = Hive.box('info');
       userName = userBox.get('name');
 
       if (userName != null) {
         return Get.offAll(IndexScreen());
       }
-      return Get.offAll( const StartScreen());
+      return Get.offAll(StartScreen());
     });
   }
-
-
 
   load() async {}
 
@@ -78,25 +75,6 @@ class _SplashScreenState extends State<SplashScreen> {
               const SizedBox(
                 height: 30,
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 90),
-              //   child: ElevatedButton(
-              //     onPressed: () async {
-
-              //     },
-              //     style: ElevatedButton.styleFrom(primary: Colors.black),
-              //     child: const Padding(
-              //       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-              //       child: Text(
-              //         'Bắt đầu',
-              //         style: TextStyle(fontSize: 16, letterSpacing: 1),
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              // SizedBox(
-              //   height: 30,
-              // ),
             ],
           ),
         ],

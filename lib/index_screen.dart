@@ -39,7 +39,7 @@ class _IndexScreenState extends State<IndexScreen> {
   }
 
   final List<Widget> pages = [
-    const HomeScreen(),
+     HomeScreen(),
     const TrasactionScreen(),
     const AddScreen(),
     const StacticScreen(),
@@ -136,7 +136,7 @@ class _IndexScreenState extends State<IndexScreen> {
                           height: 30,
                           width: 30,
                           ),
-                           const Text('Lịch sử',
+                           const Text('Giao dịch',
                           style: TextStyle(
                             fontWeight: FontWeight.w500
                           ),

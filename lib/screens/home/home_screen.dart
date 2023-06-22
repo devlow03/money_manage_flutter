@@ -3,7 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:money_manage/boxes.dart';
-import 'package:money_manage/model/trasaction.dart';
+import 'package:money_manage/model/negotiate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Box userBox;
-  
+
   String? userName;
   double? budget;
   String? day;
@@ -28,18 +28,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(() {
-      userBox = Hive.box('users');
-    userName = userBox.get('name');
-    budget = userBox.get('budget');
-    var dt = DateTime.now();
-     day = dt.day.toString();
-     month = dt.month.toString();
-     year = dt.year.toString();
+      userBox = Hive.box('info');
+      userName = userBox.get('name');
+      budget = double.parse(userBox.get('budget').toString());
+      prefs.setDouble('budget', budget ?? 0);
+      var dt = DateTime.now();
+      day = dt.day.toString();
+      month = dt.month.toString();
+      year = dt.year.toString();
     });
   }
-  
- 
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color(0xffC0DBEA),
 
       body: RefreshIndicator(
-        onRefresh: () async {
-
-        },
+        onRefresh: () async {},
         child: ListView(
           children: [
             Column(
@@ -65,9 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                           Text(
+                          Text(
                             DateFormat.yMMMMEEEEd().format(DateTime.now()),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500),
@@ -75,23 +74,23 @@ class _HomeScreenState extends State<HomeScreen> {
                           Row(
                             children: [
                               CircleAvatar(
-                            radius: 20,
-                            child: Image.asset(
-                              "assets/man.png",
-                              color: Colors.transparent,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              // snapshot.data?.first.name.toString()??'',
-                              userName.toString(),
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
+                                radius: 20,
+                                child: Image.asset(
+                                  "assets/man.png",
+                                  color: Colors.transparent,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  // snapshot.data?.first.name.toString()??'',
+                                  userName ?? '',
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
                             ],
                           )
                         ],
@@ -120,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Text(
                         NumberFormat.simpleCurrency(locale: 'vi')
-                            .format(double.parse(budget.toString())),
+                            .format(budget ?? 0),
                         style: const TextStyle(
                             color: Colors.black,
                             fontSize: 40,
@@ -215,74 +214,77 @@ class _HomeScreenState extends State<HomeScreen> {
                           vertical: 10, horizontal: 10),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text(
-                                'Giao dịch gần đây',
-                              ),
-                              Text('Xem tất cả')
-                            ],
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: const Text(
+                              'Giao dịch gần đây',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
                           ),
                           const SizedBox(
                             height: 20,
                           ),
-                          ValueListenableBuilder<Box<TrasactionModel>>(
-                            valueListenable: Boxes.getTrasaction().listenable(),
-                             builder: (context,box,_){
-                              var data = box.values.toList().cast<TrasactionModel>();
-                              return ListView.separated(
-                            itemCount: 5,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.95,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 30, horizontal: 15),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-
-                                      Text(data[index].category),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        NumberFormat.simpleCurrency(
-                                                locale: 'vi')
-                                            .format(data[index].price),
-                                        style: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500,
-                                            letterSpacing: 1),
-                                      ),
-                                      const SizedBox(
-                                        width: 100,
-                                      ),
-                                       Text(data[index].type.toString(),
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            color: const Color(0xff767474),
-                                            letterSpacing: 1),
-                                      )
-                                    ],
-                                  ));
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const SizedBox(
-                                height: 10,
-                              );
-                            },
-                          );
-                             })
-                          
+                          ValueListenableBuilder<Box<Negotiate>>(
+                              valueListenable:
+                                  Boxes.getNegotiate().listenable(),
+                              builder: (context, box, _) {
+                                var data =
+                                    box.values.toList().cast<Negotiate>();
+                                return ListView.separated(
+                                  itemCount: data.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.95,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 30, horizontal: 15),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(data[index].category),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            Text(
+                                              NumberFormat.simpleCurrency(
+                                                      locale: 'vi')
+                                                  .format(double.parse(
+                                                      data[index].price)),
+                                              style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500,
+                                                  letterSpacing: 1),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              data[index].type.toString(),
+                                              style: const TextStyle(
+                                                fontSize: 15,
+                                                color: Color(0xff767474),
+                                              ),
+                                            )
+                                          ],
+                                        ));
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return const SizedBox(
+                                      height: 10,
+                                    );
+                                  },
+                                );
+                              })
                         ],
                       ),
                     )

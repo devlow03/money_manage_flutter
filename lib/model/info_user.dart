@@ -1,15 +1,15 @@
 
 import 'package:hive/hive.dart';
- part 'user.g.dart';
+ part 'info_user.g.dart';
 
 @HiveType(typeId: 0)
-class User extends HiveObject{
+class UserModel extends HiveObject{
   @HiveField(0)
   late String name;
 
   @HiveField(1)
   late double budget;
 
-  User({required this.name, required this.budget});
+  UserModel({required this.name, required this.budget});
 
 }

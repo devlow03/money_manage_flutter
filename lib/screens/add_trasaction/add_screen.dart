@@ -1,3 +1,4 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -24,6 +25,10 @@ class _AddScreenState extends State<AddScreen> {
     'Xăng dầu',
     'Quần áo',
     'Dụng cụ cá nhân',
+    'Mua xe',
+    'Vay mượn',
+    'Trả nợ',
+    'Đi chơi',
     'Cho thuê',
     'Được tặng',
     'Tiền lương',
@@ -34,7 +39,7 @@ class _AddScreenState extends State<AddScreen> {
   TextEditingController desControl = TextEditingController();
   late Box userBox;
   String? category;
-  
+  String? price;
   double? budget;
   @override
   void initState() {
@@ -43,11 +48,14 @@ class _AddScreenState extends State<AddScreen> {
   }
 
   getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      userBox = Hive.box('users');
-    
-    budget = userBox.get('budget');
+      budget = prefs.getDouble('budget');
     });
+
+    // setState(() {
+    //   budget = double.parse(userBox.get('budget').toString());
+    // });
   }
 
   @override
@@ -55,9 +63,10 @@ class _AddScreenState extends State<AddScreen> {
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xffC0DBEA),
+      // backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        // elevation: 0,
-        backgroundColor: const Color(0xffC0DBEA),
+        elevation: 0,
+        backgroundColor: Colors.grey.shade100,
         leading: InkWell(
             onTap: () {
               Get.back();
@@ -67,28 +76,21 @@ class _AddScreenState extends State<AddScreen> {
               color: Colors.black,
             )),
         title: const Text(
-          "Tạo mới",
+          "Thêm mới",
           style: TextStyle(color: Colors.black, letterSpacing: 1),
         ),
         centerTitle: true,
       ),
       body: ListView(
         children: [
-          Container(
-            //  width: double.infinity,
-            // height: double.infinity,
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("assets/background.jpg"),
-                    fit: BoxFit.cover)),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
+          Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child:  Column(
+                  child: Column(
                     children: [
                       const SizedBox(
                         height: 20,
@@ -106,120 +108,171 @@ class _AddScreenState extends State<AddScreen> {
                       ),
                       Text(
                         NumberFormat.simpleCurrency(locale: 'vi')
-                            .format(double.parse(budget.toString())),
+                            .format(budget ?? 0),
                         style: const TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             fontSize: 40,
                             fontWeight: FontWeight.w500,
                             letterSpacing: 1.5),
                       ),
                       const SizedBox(
-                        height: 100,
+                        height: 30,
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 30),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.transparent),
-                        child: Column(
-                          children: [
-                            DropdownButtonFormField<String>(
-                              dropdownColor: Colors.white,
-                              focusColor: Colors.grey.shade300,
-                              decoration: InputDecoration(
-                                  hintStyle:
-                                  const TextStyle(color: Colors.black),
-                                  // contentPadding: const EdgeInsets.all(8),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 20),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30)),
+                              color: Colors.transparent),
+                          child: Column(
+                            children: [
+                              DropdownButtonFormField<String>(
+                                // dropdownColor: Colors.white,
+                                // focusColor: Colors.grey.shade100,
+                                decoration: InputDecoration(
+                                    hintStyle:
+                                        const TextStyle(color: Colors.black),
+                                    // contentPadding: const EdgeInsets.all(8),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                            color: Colors.black, width: 1)),
+                                    focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                          color: Colors.grey.shade300,
-                                          width: 1)),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.grey.shade300, width: 1),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.grey.shade300, width: 1),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  filled: true,
-                                  fillColor: const Color(0xffF5EBEB)),
-                              elevation: 1,
-                              hint: const Text('Chọn danh mục'),
-                              items: items.map((value) {
-                                return DropdownMenuItem<String>(
-                                    onTap: () {}, child: Text(value),
+                                          color: Colors.black, width: 1),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black, width: 1),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white),
+                                elevation: 1,
+                                hint: const Text('Chọn danh mục'),
+                                items: items.map((value) {
+                                  return DropdownMenuItem<String>(
+                                    onTap: () {},
+                                    child: Text(value),
                                     value: value,
-                                );
-                              }).toList(),
+                                  );
+                                }).toList(),
 
-                              onChanged: (value) {
-                                category = value;
-                              },
-                              
-                              menuMaxHeight:
-                              MediaQuery.of(context).size.height * .9,
-                              isDense: true,
-                              // value: cityCode!=null?cityCode:cityChosse,
-                              isExpanded: true,
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            TextFormField(
-                              controller: priceControl,
-                              decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: const Color(0xffF5EBEB),
-                                  hintText: 'Nhập giá tiền',
-                                  hintStyle:
-                                  const TextStyle(color: Colors.black),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                      borderSide: BorderSide(
-                                          color: Colors.grey.shade300)),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                      borderSide: BorderSide(
-                                          color: Colors.grey.shade300)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                      borderSide: BorderSide(
-                                          color: Colors.grey.shade300))),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            TextFormField(
-                              controller: desControl,
-                              maxLines: 6,
-                              decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: const Color(0xffF5EBEB),
-                                  hintText: 'Mô tả chi tiết',
-                                  hintStyle:
-                                  const TextStyle(color: Colors.black),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                      borderSide: BorderSide(
-                                          color: Colors.grey.shade300)),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                      borderSide: BorderSide(
-                                          color: Colors.grey.shade300)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                      borderSide: BorderSide(
-                                          color: Colors.grey.shade300))),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                          ],
+                                onChanged: (value) {
+                                  category = value;
+                                },
+
+                                menuMaxHeight:
+                                    MediaQuery.of(context).size.height * .9,
+                                isDense: true,
+                                // value: cityCode!=null?cityCode:cityChosse,
+                                isExpanded: true,
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              TextFormField(
+                                // inputFormatters: [CurrencyTextInputFormatter(
+
+                                onChanged: ((newValue) {
+                                  try {
+                                    if (priceControl.text != null) {
+                                      setState(() {
+                                        price = NumberFormat.simpleCurrency(
+                                                locale: 'vi')
+                                            .format(double.parse(
+                                                priceControl.text.toString()));
+                                      });
+                                    }
+                                  } catch (e) {
+                                    setState(() {
+                                      price = null;
+                                    });
+                                  }
+                                }),
+                                keyboardType: TextInputType.number,
+                                controller: priceControl,
+                                decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Nhập giá tiền',
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide:
+                                            BorderSide(color: Colors.black)),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide:
+                                            BorderSide(color: Colors.black)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide:
+                                            BorderSide(color: Colors.black))),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Visibility(
+                                visible: price != null,
+                                replacement: Center(),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.95,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Colors.white),
+                                      child: Center(
+                                        child: Text(
+                                          'Giá tiền: ${price.toString()}',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w700,
+                                              letterSpacing: 1.5),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              TextFormField(
+                                controller: desControl,
+                                maxLines: 4,
+                                decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Mô tả chi tiết',
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide:
+                                            BorderSide(color: Colors.black)),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide:
+                                            BorderSide(color: Colors.black)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide:
+                                            BorderSide(color: Colors.black))),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       const SizedBox(
@@ -229,22 +282,11 @@ class _AddScreenState extends State<AddScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.4,
+                            width: MediaQuery.of(context).size.width * 0.35,
                             height: 50,
                             child: ElevatedButton(
                               onPressed: () {
-                                Trasaction.instance.addTrasacsion(
-                                  category.toString(),
-                                   double.parse(priceControl.text),
-                                   'Thu nhập'
-                                   ).then((value){
-                                    userBox = Hive.box('users');
-                                      double cong = double.parse(budget.toString()) + double.parse(priceControl.text.toString());
-                                      userBox.put('budget', cong).then((value){
-                                       Get.offAll(IndexScreen());
-                                        // print(userBox.get('budget'));
-                                      });
-                                   });
+                                
                               },
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 15),
@@ -263,22 +305,22 @@ class _AddScreenState extends State<AddScreen> {
                             ),
                           ),
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.4,
+                            width: MediaQuery.of(context).size.width * 0.35,
                             height: 50,
                             child: ElevatedButton(
                               onPressed: () {
-                                Trasaction.instance.addTrasacsion(
-                                  category.toString(),
-                                   double.parse(priceControl.text),
-                                   'Chi phí'
-                                   ).then((value){
-                                      userBox = Hive.box('users');
-                                      double tru = double.parse(budget.toString()) - double.parse(priceControl.text.toString());
-                                      userBox.put('budget', tru).then((value){
-                                        Get.offAll(IndexScreen());
-                                      });
-                                     
-                                   });
+                                Trasaction.instance
+                                    .addTrasacsion(category.toString(),
+                                        priceControl.text, 'Chi phí')
+                                    .then((value) {
+                                  userBox = Hive.box('info');
+                                  double tru = double.parse(budget.toString()) -
+                                      double.parse(
+                                          priceControl.text.toString());
+                                  userBox.put('budget', tru).then((value) {
+                                    Get.offAll(IndexScreen());
+                                  });
+                                });
                               },
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 15),
@@ -299,10 +341,8 @@ class _AddScreenState extends State<AddScreen> {
                         ],
                       )
                     ],
-                  )
-                ),
-              ],
-            ),
+                  )),
+            ],
           ),
         ],
       ),

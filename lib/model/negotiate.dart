@@ -1,19 +1,19 @@
 import 'package:hive/hive.dart';
 
-part 'trasaction.g.dart';
+part 'negotiate.g.dart';
 
-@HiveType(typeId: 0)
-class TrasactionModel extends HiveObject{
+@HiveType(typeId: 1)
+class Negotiate extends HiveObject{
   @HiveField(0)
   late String category;
 
   @HiveField(1)
-  late double price;
+  late String price;
 
   @HiveField(2)
   late String type;
   
-  TrasactionModel({
+  Negotiate({
     required this.category,
     required this.price,
     required this.type

@@ -1,35 +1,38 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user.dart';
+part of 'negotiate.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserAdapter extends TypeAdapter<User> {
+class NegotiateAdapter extends TypeAdapter<Negotiate> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
-  User read(BinaryReader reader) {
+  Negotiate read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return User(
-      name: fields[0] as String,
-      budget: fields[1] as double,
+    return Negotiate(
+      category: fields[0] as String,
+      price: fields[1] as String,
+      type: fields[2] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, User obj) {
+  void write(BinaryWriter writer, Negotiate obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.category)
       ..writeByte(1)
-      ..write(obj.budget);
+      ..write(obj.price)
+      ..writeByte(2)
+      ..write(obj.type);
   }
 
   @override
@@ -38,7 +41,7 @@ class UserAdapter extends TypeAdapter<User> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserAdapter &&
+      other is NegotiateAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

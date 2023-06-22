@@ -1,38 +1,35 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'trasaction.dart';
+part of 'info_user.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TrasactionModelAdapter extends TypeAdapter<TrasactionModel> {
+class UserModelAdapter extends TypeAdapter<UserModel> {
   @override
   final int typeId = 0;
 
   @override
-  TrasactionModel read(BinaryReader reader) {
+  UserModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TrasactionModel(
-      category: fields[0] as String,
-      price: fields[1] as double,
-      type: fields[2] as String,
+    return UserModel(
+      name: fields[0] as String,
+      budget: fields[1] as double,
     );
   }
 
   @override
-  void write(BinaryWriter writer, TrasactionModel obj) {
+  void write(BinaryWriter writer, UserModel obj) {
     writer
-      ..writeByte(3)
-      ..writeByte(0)
-      ..write(obj.category)
-      ..writeByte(1)
-      ..write(obj.price)
       ..writeByte(2)
-      ..write(obj.type);
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.budget);
   }
 
   @override
@@ -41,7 +38,7 @@ class TrasactionModelAdapter extends TypeAdapter<TrasactionModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TrasactionModelAdapter &&
+      other is UserModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
